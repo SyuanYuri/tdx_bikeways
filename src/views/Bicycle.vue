@@ -8,7 +8,7 @@
         <div class="px-5 pt-8 pb-4">
           <span class="flex mb-3">
             <h3
-              class="text-base phone:text-xl tracking-widest shadow-2xl"
+              class="text-base phone:text-lg tracking-widest shadow-2xl"
               style="font-weight: bold"
             >
               下班後來兜風，找單車站…
@@ -50,7 +50,7 @@
             <span class="hidden phone:block phone:mr-auto my-auto"
               >附近站點</span
             >
-            <ul class="flex text-blue_400">
+            <ul class="flex text-blue_400 text-sm">
               <li>
                 <button
                   @click="filterTab(null)"
@@ -61,6 +61,7 @@
                     px-3
                     focus:bg-blue_400 focus:text-dark_300
                   "
+                  style="font-weight: bold"
                 >
                   全部
                 </button>
@@ -75,6 +76,7 @@
                     px-3
                     focus:bg-blue_400 focus:text-dark_300
                   "
+                  style="font-weight: bold"
                 >
                   可租
                 </button>
@@ -89,6 +91,7 @@
                     px-3
                     focus:bg-blue_400 focus:text-dark_300
                   "
+                  style="font-weight: bold"
                 >
                   可還
                 </button>
@@ -100,14 +103,13 @@
         <div
           v-if="filterList.arr.length !== 0"
           class="
-            h-48
+            h-44
             phone:h-80
             overflow-y-auto
             border-t-2
             border-blue_400
             px-2
             pt-2
-            phone:pt-5
             pb-3
           "
         >
@@ -116,6 +118,7 @@
           </div>
           <div v-for="item in filterList.arr" :key="item">
             <div
+              @click="getPosition(item)"
               class="
                 flex
                 phone:flex-row
@@ -500,7 +503,7 @@ export default {
                   總數：${item.AvailableRentBikes + item.AvailableReturnBikes}
                 </span>
               </div>
-              <h6 class="mt-auto text-sm text-gray">
+              <h6 class="w-60 mt-auto text-sm text-gray">
                 地址：${item.StationAddress.Zh_tw}
               </h6>
             </div>
@@ -565,6 +568,9 @@ export default {
     }
 
     function filterTab(item) {
+      inputValue.value = "";
+      getNearByStation();
+
       if (item === "return") {
         filterList.arr = filterList.arr.filter(
           (e) => e.AvailableReturnBikes !== 0
@@ -578,6 +584,68 @@ export default {
       }
     }
 
+    function getPosition(item) {
+      map.value.setView(
+        [item.StationPosition.PositionLat, item.StationPosition.PositionLon],
+        17
+      );
+
+      L.popup({
+        maxWidth: "500",
+        className: "popupCustom",
+      })
+        .setLatLng([
+          item.StationPosition.PositionLat,
+          item.StationPosition.PositionLon,
+        ])
+        .setContent(
+          `
+        <div class="flex flex-col">
+          <div class="flex">
+            <div class="flex flex-col mr-2">
+              <h5 class="text-xl font-medium">${item.StationName.Zh_tw.substr(
+                11
+              )}</h5>
+              <div class="flex text-sm">
+                <span class="text-success mr-1">● 正常營運</span>
+                <span class="text-gray">
+                  ${item.StationName.Zh_tw.substr(0, 10)} |
+                  總數：${item.AvailableRentBikes + item.AvailableReturnBikes}
+                </span>
+              </div>
+              <h6 class="w-60 mt-auto text-sm text-gray">
+                地址：${item.StationAddress.Zh_tw}
+              </h6>
+            </div>
+            <div class="flex flex-col">
+              <button class="bg-blue_100 text-white font-montserrat py-2 px-5 mb-2 font-medium rounded-xl duration-300">
+                <div class="w-7 inline-block text-lg font-semibold text-primary" style="letter-spacing: 1px">
+                  ${item.AvailableRentBikes}
+                </div>
+                <span class="text-blue_400 text-sm">可租</span>
+              </button>
+              <button class="bg-blue_100 text-white font-montserrat py-2 px-5 font-medium rounded-xl duration-300">
+                <div class="w-7 inline-block text-lg font-semibold" style="letter-spacing: 1px">
+                  ${item.AvailableReturnBikes}
+                </div>
+                <span class="text-blue_400 text-sm">可還</span>
+              </button>
+            </div>
+          </div>
+          <div>
+            <a href="https://www.google.com.tw/maps/place/${
+              item.StationAddress.Zh_tw
+            }" target="_blank">
+              <button class="mt-2 bg-gradient-to-r from-secondary to-primary hover:to-secondary text-black w-full rounded pt-3 pb-2 text-sm" style="letter-spacing: 2px;font-weight: bold;">
+                前往導航
+              </button>
+            </a>
+          </div>
+        </div>`
+        )
+        .openOn(map.value);
+    }
+
     return {
       noData,
       loading,
@@ -589,6 +657,7 @@ export default {
       lastTime,
       getGeolocation,
       setZoom,
+      getPosition,
     };
   },
 };
@@ -607,7 +676,7 @@ export default {
 
 .search-box {
   position: fixed;
-  bottom: 30rem;
+  bottom: 2rem;
   left: 7rem;
   z-index: 500;
 }

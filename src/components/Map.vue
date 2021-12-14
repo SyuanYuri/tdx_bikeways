@@ -162,7 +162,7 @@ export default {
           let popupContents = `
           <div class="flex">
             <div class="flex flex-col mr-2">
-              <h5 class="text-xl font-medium">
+              <h5 class="text-lg font-medium">
               ${item.StationName.Zh_tw.substr(11)}
               </h5>
                 <div class="flex text-sm">
@@ -172,7 +172,7 @@ export default {
                   | 總數：${item.AvailableRentBikes + item.AvailableReturnBikes}
                   </span>
                 </div>
-              <h6 class="mt-auto text-sm text-gray">
+              <h6 class="w-60 mt-auto text-sm text-gray">
                 地址：${item.StationAddress.Zh_tw}
               </h6>
             </div>
@@ -236,10 +236,27 @@ export default {
       });
 
       watch(stationPosition, (item) => {
-        let popupContents = `
+        map.value.setView(
+          [
+            item.arr.StationPosition.PositionLat,
+            item.arr.StationPosition.PositionLon,
+          ],
+          18
+        );
+
+        L.popup({
+          maxWidth: "500",
+          className: "popupCustom",
+        })
+          .setLatLng([
+            item.arr.StationPosition.PositionLat,
+            item.arr.StationPosition.PositionLon,
+          ])
+          .setContent(
+            `
           <div class="flex">
             <div class="flex flex-col mr-2">
-              <h5 class="text-xl font-medium">
+              <h5 class="text-lg font-medium">
               ${item.arr.StationName.Zh_tw.substr(11)}
               </h5>
                 <div class="flex text-sm">
@@ -269,25 +286,9 @@ export default {
                 <span class="text-blue_400 text-sm">可還</span>
               </button>
             </div>
-          </div>`;
-
-        map.value.setView(
-          [
-            item.arr.StationPosition.PositionLat,
-            item.arr.StationPosition.PositionLon,
-          ],
-          18
-        );
-        L.marker(
-          [
-            item.arr.StationPosition.PositionLat,
-            item.arr.StationPosition.PositionLon,
-          ],
-          { icon: gold }
-        )
-          .addTo(map.value)
-          .bindPopup(popupContents, popupOptions)
-          .openPopup();
+          </div>`
+          )
+          .openOn(map.value);
       });
     });
 

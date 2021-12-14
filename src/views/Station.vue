@@ -215,7 +215,7 @@
                       />
                     </div>
                     <div class="flex flex-col">
-                      <span class="text-light text-base text-left w-48">
+                      <span class="text-light text-lg text-left w-60">
                         {{ `${item.StationName.Zh_tw.substr(11)}` }}
                       </span>
                       <div class="flex text-xs mt-1">
