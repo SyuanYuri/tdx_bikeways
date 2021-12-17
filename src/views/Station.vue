@@ -115,7 +115,7 @@ function getPosition(item) {
   <div class="overflow-hidden w-screen h-screen bg-dark_100 grid">
     <div class="flex flex-col justify-center my-auto">
       <div>
-        <h3 class="text-left text-light text-3xl ml-10 phone:ml-28 my-4">單車站總覽</h3>
+        <h3 class="text-left text-light text-2xl ml-10 phone:ml-28 mb-3">單車站總覽</h3>
       </div>
       <Map />
       <div class="grid grid-cols-1 laptop:grid-cols-3 gap-3 w-full bg-dark_100">

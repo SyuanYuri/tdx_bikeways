@@ -30,7 +30,7 @@ module.exports = (list) => `
   </div>
   <div>
     <a href="https://www.google.com.tw/maps/place/${list.StationAddress.Zh_tw}" target="_blank">
-      <button class="mt-2 bg-gradient-to-r from-secondary to-primary hover:to-secondary text-black w-full rounded py-2 text-sm" style="letter-spacing: 2px">
+      <button style="background: linear-gradient(90deg, #F07E3F 0%, #FFCE65 100%);letter-spacing: 2px; border-radius: 5px; font-weight: bold;" class="mt-2 text-black w-full py-2 text-sm hover:text-blue_100">
         前往導航
       </button>
     </a>
