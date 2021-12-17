@@ -22,6 +22,7 @@ let cityDistrict = ref("");
 const districtList = reactive({ list: [] });
 const allStation = reactive({ list: [] });
 const stationRoute = reactive({ list: [] });
+const alertState = reactive([false, false]);
 
 watch(addressCityName, () => {
   // 縣市變更則清空區域
@@ -41,6 +42,20 @@ async function searchStation(item) {
     : (cityValue = addressCityName.value);
 
   try {
+    // 判斷是否已選擇縣市
+    if (item === "name" && cityName.value === '') {
+      alertState[0] = true;
+      loading.value = false;
+      return;
+    } else if (item !== "name" && addressCityName.value === '') {
+      alertState[1] = true;
+      loading.value = false;
+      return;
+    }
+
+    alertState[0] = false;
+    alertState[1] = false;
+
     const res = await axios({
       method: "get",
       url: `https://ptx.transportdata.tw/MOTC/v2/Cycling/Shape/${cityValue}?$format=JSON`,
@@ -102,19 +117,27 @@ function getPosition(item) {
         <div class="mt-5 mx-2 laptop:ml-10 grid grid-cols-2 laptop:grid-cols-1 place-items-center">
           <div class="flex flex-col">
             <span class="text-left text-light text-lg">依自行車道名稱</span>
-            <select
-              v-model="cityName"
-              class="text-blue_400 bg-dark border-2 rounded-md shadow-2xl border-blue_300 py-1 px-1 mr-4 my-2 w-full tablet:w-32"
-              name="city"
-              id="city"
-            >
-              <option disabled selected="true" value>縣市</option>
-              <option
-                v-for="item in routeCityList.group"
-                :key="item"
-                :value="item.enName"
-              >{{ item.cityName }}</option>
-            </select>
+            <div class="flex flex-col tablet:flex-row">
+              <select
+                v-model="cityName"
+                class="text-blue_400 bg-dark border-2 rounded-md shadow-2xl border-blue_300 py-1 px-1 mr-4 my-2 w-full tablet:w-32"
+                name="city"
+                id="city"
+              >
+                <option disabled selected="true" value>縣市</option>
+                <option
+                  v-for="item in routeCityList.group"
+                  :key="item"
+                  :value="item.enName"
+                >{{ item.cityName }}</option>
+              </select>
+              <div class="my-auto" v-show="alertState[0]">
+                <div class="flex text-danger">
+                  <Icon class="my-auto mr-1" icon="mdi:alert-circle" />
+                  <span class="text-sm">請選擇縣市</span>
+                </div>
+              </div>
+            </div>
             <div class="flex flex-col tablet:flex-row">
               <input
                 v-model="inputValue"
@@ -137,29 +160,37 @@ function getPosition(item) {
           </div>
           <div class="flex flex-col laptop:mt-4 mt-0 laptop:ml-0 ml-2">
             <span class="text-left text-light text-lg">依自行車道區域</span>
-            <div class="flex tablet:mr-auto">
-              <select
-                v-model="addressCityName"
-                class="text-blue_400 bg-dark border-2 rounded-md shadow-2xl border-blue_300 py-1 px-1 mr-4 my-2 w-full tablet:w-20"
-                name="city"
-                id="city"
-              >
-                <option disabled selected="true" value>縣市</option>
-                <option
-                  v-for="item in routeCityList.group"
-                  :key="item"
-                  :value="item.enName"
-                >{{ item.cityName }}</option>
-              </select>
-              <select
-                v-model="cityDistrict"
-                class="text-blue_400 bg-dark border-2 rounded-md shadow-2xl border-blue_300 py-1 px-1 tablet:mr-4 my-2 w-full tablet:w-20"
-                name="city"
-                id="city"
-              >
-                <option disabled selected="true" value>區域</option>
-                <option v-for="item in districtList.list" :key="item" :value="item">{{ item }}</option>
-              </select>
+            <div class="flex flex-col tablet:flex-row tablet:mr-auto">
+              <div class="flex">
+                <select
+                  v-model="addressCityName"
+                  class="text-blue_400 bg-dark border-2 rounded-md shadow-2xl border-blue_300 py-1 px-1 mr-4 my-2 w-full tablet:w-22"
+                  name="city"
+                  id="city"
+                >
+                  <option disabled selected="true" value>縣市</option>
+                  <option
+                    v-for="item in routeCityList.group"
+                    :key="item"
+                    :value="item.enName"
+                  >{{ item.cityName }}</option>
+                </select>
+                <select
+                  v-model="cityDistrict"
+                  class="text-blue_400 bg-dark border-2 rounded-md shadow-2xl border-blue_300 py-1 px-1 tablet:mr-4 my-2 w-full tablet:w-22"
+                  name="city"
+                  id="city"
+                >
+                  <option disabled selected="true" value>區域</option>
+                  <option v-for="item in districtList.list" :key="item" :value="item">{{ item }}</option>
+                </select>
+              </div>
+              <div class="my-auto" v-show="alertState[1]">
+                <div class="flex flex-nowrap text-danger">
+                  <Icon class="my-auto mr-1" icon="mdi:alert-circle" />
+                  <span class="text-sm">請選擇縣市</span>
+                </div>
+              </div>
             </div>
 
             <div class="flex flex-col tablet:flex-row">
