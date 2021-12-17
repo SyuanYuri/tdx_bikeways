@@ -1,9 +1,3 @@
-<template>
-  <div class="overflow-hidden font-serif">
-    <div id="mapContainer"></div>
-  </div>
-</template>
-
 <script>
 import { ref, reactive, onMounted, onBeforeUnmount, inject, watch } from "vue";
 import "leaflet/dist/leaflet.css";
@@ -11,10 +5,10 @@ import { Icon } from "leaflet";
 import Wkt from "wicket";
 import L from "leaflet";
 import axios from "axios";
-import jsSHA from "jssha";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
+import { getAuthorization } from '@/utils/authorization.js';
 
 // 設定預設 Icon
 delete Icon.Default.prototype._getIconUrl;
@@ -29,23 +23,6 @@ export default {
   props: ["setStationMarker"],
 
   setup() {
-    // API 驗證
-    function getAuthorization() {
-      const AppID = "79a73afeb9e64372a7efd89b14614c71";
-      const AppKey = "aviwq5lx9v2Ot5mHWwZLb4mJRw0";
-      const GMTString = new Date().toGMTString();
-      const ShaObj = new jsSHA("SHA-1", "TEXT");
-      ShaObj.setHMACKey(AppKey, "TEXT");
-      ShaObj.update("x-date: " + GMTString);
-      const HMAC = ShaObj.getHMAC("B64");
-      let Authorization = `hmac username="${AppID}", algorithm="hmac-sha1", headers="x-date", signature="${HMAC}"`;
-
-      return {
-        Authorization: Authorization,
-        "X-Date": GMTString,
-      };
-    }
-
     let map = ref(null);
     let longitude = ref(null);
     let latitude = ref(null);
@@ -56,6 +33,7 @@ export default {
     const availableStationList = inject("availableStation", []);
     const stationPosition = inject("stationPosition", []);
     const geometryValue = inject("geometry", []);
+    const createPopupTemplate = require("@/utils/popupTemplate.js");
 
     const popupOptions = reactive({
       maxWidth: "500",
@@ -159,38 +137,6 @@ export default {
 
         item ? (list = item.list) : (list = filterData.arr);
         list.forEach((item) => {
-          let popupContents = `
-          <div class="flex">
-            <div class="flex flex-col mr-2">
-              <h5 class="text-lg font-medium">
-              ${item.StationName.Zh_tw.substr(11)}
-              </h5>
-                <div class="flex text-sm">
-                  <span class="text-success mr-1">● 正常營運</span>
-                  <span class="text-gray">
-                  ${item.StationName.Zh_tw.substr(0, 10)}
-                  | 總數：${item.AvailableRentBikes + item.AvailableReturnBikes}
-                  </span>
-                </div>
-              <h6 class="w-60 mt-auto text-sm text-gray">
-                地址：${item.StationAddress.Zh_tw}
-              </h6>
-            </div>
-            <div class="flex flex-col">
-              <button class="bg-blue_100 text-white font-montserrat py-2 px-5 mb-2 font-medium rounded-xl duration-300">
-                <div class="w-7 inline-block text-lg font-semibold text-primary" style="letter-spacing: 1px;">
-                  ${item.AvailableRentBikes}
-                </div>
-                <span class="text-blue_400 text-sm">可租</span>
-              </button>
-              <button class="bg-blue_100 text-white font-montserrat py-2 px-5 font-medium rounded-xl duration-300">
-                <div class="w-7 inline-block text-lg font-semibold" style="letter-spacing: 1px;">
-                  ${item.AvailableReturnBikes}
-                </div>
-                <span class="text-blue_400 text-sm">可還</span>
-              </button>
-            </div>
-          </div>`;
           markers.addTo(map.value);
           markers.addLayer(
             L.marker(
@@ -199,7 +145,7 @@ export default {
                 item.StationPosition.PositionLon,
               ],
               { icon: gold }
-            ).bindPopup(popupContents, popupOptions)
+            ).bindPopup(createPopupTemplate(item), popupOptions)
           );
           map.value.addLayer(markers);
         });
@@ -252,42 +198,7 @@ export default {
             item.arr.StationPosition.PositionLat,
             item.arr.StationPosition.PositionLon,
           ])
-          .setContent(
-            `
-          <div class="flex">
-            <div class="flex flex-col mr-2">
-              <h5 class="text-lg font-medium">
-              ${item.arr.StationName.Zh_tw.substr(11)}
-              </h5>
-                <div class="flex text-sm">
-                  <span class="text-success mr-1">● 正常營運</span>
-                  <span class="text-gray">
-                  ${item.arr.StationName.Zh_tw.substr(0, 10)}
-                  | 總數：${
-                    item.arr.AvailableRentBikes + item.arr.AvailableReturnBikes
-                  }
-                  </span>
-                </div>
-              <h6 class="w-80 mt-auto text-sm text-gray">
-                地址：${item.arr.StationAddress.Zh_tw}
-              </h6>
-            </div>
-            <div class="flex flex-col ml-auto">
-              <button class="bg-blue_100 text-white font-montserrat py-2 px-5 mb-2 font-medium rounded-xl duration-300">
-                <div class="w-7 inline-block text-lg font-semibold text-primary" style="letter-spacing: 1px;">
-                  ${item.arr.AvailableRentBikes}
-                </div>
-                <span class="text-blue_400 text-sm">可租</span>
-              </button>
-              <button class="bg-blue_100 text-white font-montserrat py-2 px-5 font-medium rounded-xl duration-300">
-                <div class="w-7 inline-block text-lg font-semibold" style="letter-spacing: 1px;">
-                  ${item.arr.AvailableReturnBikes}
-                </div>
-                <span class="text-blue_400 text-sm">可還</span>
-              </button>
-            </div>
-          </div>`
-          )
+          .setContent(createPopupTemplate(item.arr))
           .openOn(map.value);
       });
     });
@@ -300,6 +211,12 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div class="overflow-hidden font-serif">
+    <div id="mapContainer"></div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 #mapContainer {

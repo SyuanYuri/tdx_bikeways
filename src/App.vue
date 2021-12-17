@@ -1,18 +1,13 @@
+<script setup>
+import Sidebar from "@/components/Sidebar.vue";
+</script>
+
 <template>
   <div class="flex">
     <Sidebar />
     <router-view />
   </div>
 </template>
-
-<script>
-import Sidebar from "@/components/Sidebar.vue";
-export default {
-  components: {
-    Sidebar,
-  },
-};
-</script>
 
 <style lang="scss">
 #app {
@@ -40,11 +35,13 @@ export default {
 ::-webkit-scrollbar {
   width: 5px;
 }
+
 ::-webkit-scrollbar-track {
   -webkit-border-radius: 10px;
   border-radius: 10px;
   margin: 3px 0 5px 0;
 }
+
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 4px;
   border-radius: 4px;
