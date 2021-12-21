@@ -229,14 +229,14 @@ function getPosition(item) {
               >
                 <div
                   @click="getPosition(item)"
-                  class="flex flex-col h-32 p-3"
+                  class="flex flex-col phone:h-32 h-full p-3"
                   style="cursor: pointer"
                 >
                   <div class="flex my-auto content-center">
                     <div class="flex flex-col">
                       <div class="grid grid-cols-7">
                         <span
-                          class="col-span-6 text-light text-lg text-left desktop:w-72 w-full"
+                          class="col-span-6 text-light text-lg text-left desktop:w-72 phone:w-full w-48"
                         >{{ item.RouteName }}</span>
                         <span
                           v-show="item.Direction"
