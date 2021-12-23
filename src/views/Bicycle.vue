@@ -14,7 +14,7 @@ import "leaflet.markercluster";
 import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-import { getAuthorization } from '@/utils/authorization.js';
+import { getAuthorization } from "@/utils/authorization.js";
 
 let map = ref(null);
 let longitude = ref(null);
@@ -181,7 +181,7 @@ function getNearByStation() {
   if (inputValue.value === "") {
     filterList.arr = stationList.list;
   } else {
-    filterList.arr = filterList.arr.filter((item) =>
+    filterList.arr = stationList.list.filter((item) =>
       item.StationName.Zh_tw.match(inputValue.value)
     );
   }
@@ -226,7 +226,7 @@ function getPosition(item) {
     <div class="search-box">
       <div class="rounded-xl bg-blue_100 text-yellow shadow-2xl" style="max-width: 400px">
         <div class="px-5 pt-8 pb-4">
-          <span class="flex mb-3">
+          <span class="phone:flex hidden mb-3">
             <h3
               class="text-base phone:text-lg tracking-widest shadow-2xl"
               style="font-weight: bold"
@@ -278,7 +278,7 @@ function getPosition(item) {
 
         <div
           v-if="filterList.arr.length !== 0"
-          class="h-44 phone:h-80 overflow-y-auto border-t-2 border-blue_400 px-2 pt-2 pb-3"
+          class="max-h-44 phone:max-h-80 h-full overflow-y-auto border-t-2 border-blue_400 px-2 pt-2 pb-3"
         >
           <div class="m-auto" v-show="loading">
             <Spinner />
@@ -390,14 +390,14 @@ function getPosition(item) {
 
 .search-box {
   position: fixed;
-  bottom: 2rem;
   left: 7rem;
   z-index: 500;
+  margin-top: 40px;
 }
 
 @media (max-width: 520px) {
   .search-box {
-    bottom: 3.5em;
+    bottom: 2em;
     left: 3.5em;
     margin: 0 20px;
   }
