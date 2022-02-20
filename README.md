@@ -2,7 +2,7 @@
 
 > 這是一份以 Vue 3 開發的前端練習作品，無任何商業用途。
 
-![image](https://upload.cc/i1/2021/12/23/4zZTFd.png)
+![image](https://upload.cc/i1/2022/02/20/3a2i1O.png)
 
 ## 簡介
 
@@ -27,7 +27,7 @@
 - 點擊列表內容即可開啟地圖上之地標。
 - 點擊「前往導航」即可開啟 Google Map 導航頁面。
 
-![image](https://upload.cc/i1/2021/12/23/eBK0Ds.png)
+![image](https://upload.cc/i1/2022/02/20/hNF3eM.png)
 
 ### 車站總覽
 
