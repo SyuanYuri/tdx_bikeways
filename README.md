@@ -1,4 +1,4 @@
-# Let's BIKE 自行車道地圖資訊整合網 — [Demo](https://syuanyuri.github.io/TDX_Bike/)
+# Let's BIKE 自行車道地圖資訊整合網 — [Demo](https://syuanyuri.github.io/tdx_bikeways/)
 
 > 這是一份以 Vue 3 開發的前端練習作品，無任何商業用途。
 
