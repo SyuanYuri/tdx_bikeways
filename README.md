@@ -27,7 +27,7 @@
 - 點擊列表內容即可開啟地圖上之地標。
 - 點擊「前往導航」即可開啟 Google Map 導航頁面。
 
-![image](https://upload.cc/i1/2022/02/20/hNF3eM.png)
+![image](https://upload.cc/i1/2022/03/09/ZqAit7.png)
 
 ### 車站總覽
 
